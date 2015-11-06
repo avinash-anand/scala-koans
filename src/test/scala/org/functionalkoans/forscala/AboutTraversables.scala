@@ -293,8 +293,8 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
           |  (xs take n, xs drop n)""") {
     val array = Array(87, 44, 5, 4, 200, 10, 39, 100)
     val result = array splitAt 3
-    result._1 should be(Array(__, __, __))
-    result._2 should be(Array(__, __, __, __, __))
+    result._1 should be(Array(87, 44, 5))
+    result._2 should be(Array(4, 200, 10, 39, 100))
   }
 
   koan( """span will split a Traversable according to predicate, returning
@@ -302,8 +302,8 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
           |  is also defined as (xs takeWhile p, xs dropWhile p)""") {
     val array = Array(87, 44, 5, 4, 200, 10, 39, 100)
     val result = array span (_ < 100)
-    result._1 should be(Array(__, __, __, __))
-    result._2 should be(Array(__, __, __, __))
+    result._1 should be(Array(87, 44, 5, 4))
+    result._2 should be(Array(200, 10, 39, 100))
   }
 
   koan( """partition will split a Traversable according to predicate, return
@@ -312,8 +312,8 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
           |  partition is also defined as (xs filter p, xs filterNot p)""") {
     val array = Array(87, 44, 5, 4, 200, 10, 39, 100)
     val result = array partition (_ < 100)
-    result._1 should be(Array(__, __, __, __, __, __))
-    result._2 should be(Array(__, __))
+    result._1 should be(Array(87, 44, 5, 4, 10, 39))
+    result._2 should be(Array(200, 100))
   }
 
   koan( """groupBy will categorize a Traversable according to function, and return
@@ -350,29 +350,29 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
         zeroPartial
     }
 
-    (result("Even and less than 100") size) should be(__)
-    (result("Large Number") size) should be(__)
+    (result("Even and less than 100") size) should be(3)
+    (result("Large Number") size) should be(2)
   }
 
   koan( """forall will determine if a predicate is valid for all members of a
           |  Traversable.""") {
     val list = List(87, 44, 5, 4, 200, 10, 39, 100)
     val result = list forall (_ < 100)
-    result should be(__)
+    result should be(false)
   }
 
   koan( """`exists` will determine if a predicate
           | is valid for some members of a Traversable.""") {
     val list = List(87, 44, 5, 4, 200, 10, 39, 100)
     val result = list exists (_ < 100)
-    result should be(__)
+    result should be(true)
   }
 
   koan( """`count` will count the number of elements that satisfy a predicate
           | in a Traversable.""") {
     val list = List(87, 44, 5, 4, 200, 10, 39, 100)
     val result = list count (_ < 100)
-    result should be(__)
+    result should be(6)
   }
 
   koan( """ `/:` or `foldLeft` will combine an operation starting with a seed and combining from the left.  Fold Left
@@ -386,20 +386,20 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
     val result = (0 /: list) {
       (`running total`, `next element`) => `running total` - `next element`
     }
-    result should be(__)
+    result should be(-15)
 
     val result2 = list.foldLeft(0) {
       (`running total`, `next element`) => `running total` - `next element`
     }
-    result2 should be(__)
+    result2 should be(-15)
 
     val result3 = (0 /: list)(_ - _) //Short hand
-    result3 should be(__)
+    result3 should be(-15)
 
     val result4 = list.foldLeft(0)(_ - _)
-    result4 should be(__)
+    result4 should be(-15)
 
-    (((((0 - 5) - 4) - 3) - 2) - 1) should be(__)
+    (((((0 - 5) - 4) - 3) - 2) - 1) should be(-15)
   }
 
   koan( """ `:\` or foldRight` will combine an operation starting with a seed and combining from the right.  Fold right
@@ -414,54 +414,54 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
     val result = (list :\ 0) {
       (`next element`, `running total`) => `next element` - `running total`
     }
-    result should be(__)
+    result should be(3)
 
     val result2 = (list :\ 0) {
       (`next element`, `running total`) => `next element` - `running total`
     }
-    result2 should be(__)
+    result2 should be(3)
 
     val result3 = (list :\ 0)(_ - _) //Short hand
-    result3 should be(__)
+    result3 should be(3)
 
     val result4 = list.foldRight(0)(_ - _)
-    result4 should be(__)
+    result4 should be(3)
 
-    (5 - (4 - (3 - (2 - (1 - 0))))) should be(__)
+    (5 - (4 - (3 - (2 - (1 - 0))))) should be(3)
   }
 
   koan( """`reduceLeft` is the similar to foldLeft, except that the seed is the head value""") {
     val intList = List(5, 4, 3, 2, 1)
     intList.reduceLeft {
       _ + _
-    } should be(__)
+    } should be(15)
 
     val stringList = List("Do", "Re", "Me", "Fa", "So", "La", "Te", "Do")
     stringList.reduceLeft {
       _ + _
-    } should be(__)
+    } should be("DoReMeFaSoLaTeDo")
   }
 
   koan( """`reduceRight` is the similar to foldRight, except that the seed is the last value""") {
     val intList = List(5, 4, 3, 2, 1)
     intList.reduceRight {
       _ + _
-    } should be(__)
+    } should be(15)
 
     val stringList = List("Do", "Re", "Me", "Fa", "So", "La", "Te", "Do")
     stringList.reduceRight {
       _ + _
-    } should be(__)
+    } should be("DoReMeFaSoLaTeDo")
   }
 
   koan( """There are some methods that take much of the folding work out by providing basic functionality.
           |  `sum` will add all the elements, product will multiply, min would determine the smallest element, and
           |  `max` the largest.""") {
     val intList = List(5, 4, 3, 2, 1)
-    intList.sum should be(__)
-    intList.product should be(__)
-    intList.max should be(__)
-    intList.min should be(__)
+    intList.sum should be(15)
+    intList.product should be(120)
+    intList.max should be(5)
+    intList.min should be(1)
   }
 
   koan( """You would choose foldLeft/reduceLeft or foldRight/reduceRight based on your mathematical goal.
@@ -482,27 +482,27 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
     val totalReduceLeftTime = reduceLeftEndTime.getTime - reduceLeftStartTime.getTime
     val totalReduceRightTime = reduceRightEndTime.getTime - reduceRightStartTime.getTime
 
-    (totalReduceRightTime > totalReduceLeftTime) should be(__)
+    (totalReduceRightTime > totalReduceLeftTime) should be(true)
   }
 
   koan( """`transpose` will take a traversable of traversables and group them by their position in
           |  it's own traversable.  E.g. ((x1, x2),(y1, y2)).transpose = (x1, y1), (x2, y2).
           |  or ((x1, x2, x3),(y1, y2, y3),(z1, z2, z3)).transpose = ((x1, y1, z1), (x2, y2, z2), (x3, y3, z3))""") {
     val list = List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
-    list.transpose should be(List(List(__, __, __), List(__, __, __), List(__, __, __)))
+    list.transpose should be(List(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9)))
 
     val list2 = List(List(1), List(4))
-    list2.transpose should be(List(List(__, __)))
+    list2.transpose should be(List(List(1, 4)))
   }
 
   koan( """`mkString` will format a Traversable using a given string as the delimiter.""") {
     val list = List(1, 2, 3, 4, 5)
-    list.mkString(",") should be(__)
+    list.mkString(",") should be("1,2,3,4,5")
   }
 
   koan( """`mkString` will also take a beginning and ending string to surround the list.""") {
     val list = List(1, 2, 3, 4, 5)
-    list.mkString(">", ",", "<") should be(__)
+    list.mkString(">", ",", "<") should be(">1,2,3,4,5<")
   }
 
   koan( """`addString` will take a StringBuilder to add the contents of list into the builder.""") {
@@ -510,7 +510,7 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
     val list = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     stringBuilder.append("I want all numbers 6-12: ")
     list.filter(it => it > 5 && it < 13).addString(stringBuilder, ",")
-    stringBuilder.mkString should be(__)
+    stringBuilder.mkString should be("I want all numbers 6-12: 6,7,8,9,10,11,12")
   }
 
   koan("Traversables can have views which allow you to efficiently do compound work.") {
@@ -524,29 +524,29 @@ class AboutTraversables extends KoanSuite with ShouldMatchers {
     lst.map { x => addHistory("Doubling %s".format(x)); x * 2}.map
             { x => addHistory("Adding 1 to %s".format(x)); x + 1}
 
-    history(0) should be(__)
-    history(1) should be(__)
-    history(2) should be(__)
-    history(3) should be(__)
-    history(4) should be(__)
-    history(5) should be(__)
+    history(0) should be("Doubling 1")
+    history(1) should be("Doubling 2")
+    history(2) should be("Doubling 3")
+    history(3) should be("Adding 1 to 2")
+    history(4) should be("Adding 1 to 4")
+    history(5) should be("Adding 1 to 6")
 
     history = List[String]()
 
     lst.view.map { x => addHistory("Doubling %s".format(x)); x * 2}.map {
                    x => addHistory("Adding 1 to %s".format(x)); x + 1}.force
 
-    history(0) should be(__)
-    history(1) should be(__)
-    history(2) should be(__)
-    history(3) should be(__)
-    history(4) should be(__)
-    history(5) should be(__)
+    history(0) should be("Doubling 1")
+    history(1) should be("Adding 1 to 2")
+    history(2) should be("Doubling 2")
+    history(3) should be("Adding 1 to 4")
+    history(4) should be("Doubling 3")
+    history(5) should be("Adding 1 to 6")
   }
 
   koan( """Views can also accept a `to` and `from` value which takes a subset and performs your view
           |  functions on the subset.""") {
     val list = List(1, 2, 3, 4, 5, 6, 7, 8)
-    list.view(3, 6).map(_ + 2).map(_ * 10).force should be(List(__, __, __))
+    list.view(3, 6).map(_ + 2).map(_ * 10).force should be(List(60, 70, 80))
   }
 }
